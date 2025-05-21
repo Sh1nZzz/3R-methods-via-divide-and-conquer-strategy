@@ -1,0 +1,596 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="testGSW.css">
+    <style>
+        @media screen and (max-width: 800px) {
+            .leftcolumn, .rightcolumn {
+                width: 100%;
+                padding: 0;
+            }
+        }
+
+        /* 响应式布局 -屏幕尺寸小于 400px 时，导航等布局改为上下布局 */
+        @media screen and (max-width: 400px) {
+            .guide_a a {
+                float: none;
+                width: 100%;
+            }
+        }
+
+        a.LinkToV1 {
+            color: blue;
+            font-weight: 200;
+        }
+
+        /* 设置视频样式 */
+        video {
+            width: 100%; /* 视频宽度占据容器的100% */
+            height: auto; /* 根据宽度自动调整高度 */
+        }
+
+        div.Div {
+            color: black;
+            width: 1000px;
+            margin: auto auto auto auto;
+            padding: 20px;
+            text-align: justify;
+            font-size: 20px
+        }
+
+        div.Div-down {
+            color: black;
+            width: 1000px;
+            margin: auto auto auto auto;
+            padding: 25px;
+            text-align: justify;
+        }
+
+        div.Div-Title {
+            color: black;
+            width: 1000px;
+            margin: auto auto auto auto;
+            padding: 0px;
+            text-align: left;
+            font-size: 25px;
+            font-weight: 400;
+        }
+
+        div.Div-Table {
+            color: black;
+            width: 1000px;
+            margin: auto auto auto auto;
+            padding: 5px;
+            text-align: center;
+            font-size: 20px
+        }
+
+        td.Table-Image {
+            text-align: center; /* 水平居中 */
+            vertical-align: middle; /* 垂直居中 */
+        }
+
+        td.Table-Image2 {
+            text-align: center; /* 水平居中 */
+            vertical-align: middle; /* 垂直居中 */
+            font-size: 20px
+        }
+
+        /*仅对于重建表格*/
+        #recon-table td:first-child {
+            border-right: 2px solid black;
+        }
+
+    </style>
+
+    <title>
+        SfM on-the-fly: Get better 3D from What You Capture
+    </title>
+</head>
+<body>
+    <!-- 头部导航栏 -->
+    <ul class="HeadMenu">
+        <li class="HeadMenu_Content"><a class="LinkTo" href="#Abstract">Abstract</a></li>
+        <li class="HeadMenu_Content"><a class="LinkTo" href="#Video">Video</a></li>
+        <li class="HeadMenu_Content"><a class="LinkTo" href="#Download">Download</a></li>
+        <li class="HeadMenu_Content"><a class="LinkTo" href="#Experiments">Experiments</a></li>
+        <li class="HeadMenu_Content"><a class="LinkTo" href="#Application">Application</a></li>
+        <li class="HeadMenu_Content"><a class="LinkTo" href="#Acknowledgement">Acknowledgement</a></li>
+        <li class="HeadMenu_Content"><a class="LinkTo" href="#Reference">Reference</a></li>
+        <li class="HeadMenu_Content"><a class="LinkTo" href="#About us">About us</a></li>
+    </ul>
+
+    <!-- 占位符 -->
+    <div class="Empty_50"></div>
+
+    <!-- 主标题 -->
+    <div class="HeadWord">
+        <!-- 占位符 -->
+        <div class="Empty_50"></div>
+        SfM on-the-fly: A robust near real-time SfM for spatiotemporally disordered high-resolution imagery from multiple agents
+        <!-- 占位符 -->
+        <div class="Empty_50"></div>
+    </div>
+
+    <div class="HeadWordName">
+        <a href="http://www.sgg.whu.edu.cn/info/1391/35421.htm">Zongqian Zhan<sup>1</sup></a>,
+        Yifei Yu<sup>1</sup>,  Rui Xia<sup>1</sup>,  Wentian Gan<sup>1</sup>,
+        <a href="http://www.sgg.whu.edu.cn/info/1392/4653.htm">Hong Xie<sup>1</sup></a>,
+        Giulio Perda<sup>2</sup>,<br>
+        <a href="https://3dom.fbk.eu/people/profile/luca-morelli">Luca Morelli<sup>2</sup></a>,
+        <a href="https://3dom.fbk.eu/people/profile/remondino">Fabio Remondino<sup>2</sup></a>,
+        <a href="http://www.sgg.whu.edu.cn/info/1392/1204.htm">Xin Wang<sup>1,*</sup></a>
+        <!-- 占位符 -->
+        <div class="Empty_20"></div>
+        <em>1.School of Geodesy and Geomatics, Wuhan University, Wuhan, P.R.China</em><br>
+        <em>2.Fondazione Bruno Kessler, Trento, Italy</em>
+    </div>
+
+    <!-- 占位符 -->
+    <div class="Empty_20"></div>
+
+    <!-- Overview -->
+    <div class="WhitePart">
+        <table>
+            <tr>
+                <td class="Table-Image"><img src="Overview.png" width="571" height="444"></td>
+                <td class="Table-Image"><img src="SubmapMerge.png" width="734" height="370"></td>
+            </tr>
+            <tr>
+                <td class="Table-Image2">Overview of on-the-fly SfM</td>
+                <td class="Table-Image2">Multi-agents on-the-fly SfM platform</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Abstract -->
+    <div class="WhitePart">
+        <div class="MainText_Title"><br><section id="Abstract">Abstract</section></div>
+    </div>
+    <div class="Div">
+        Over the last decades, Structure from Motion (SfM) has been a constant research hotspot in the fields of photogrammetry,
+        computer vision, robotics etc., whereas, real-time performance is widely concerned, recently.
+        In this project, we present a new online SfM, namely SfM on-the-fly,
+        based on our previous <a class="LinkToV1" href="https://yifeiyu225.github.io/on-the-flySfMv1.github.io/">on-the-fly SfMv1</a> which runs online SfM while image capturing.
+        The new updated version (SfM on-the-fly) is now with three significant improvements to get better from what you capture:
+        <br><br>
+        First, online image matching is further boosted by employing the Hierarchical Navigable Small World (HNSW) graphs,
+        which can result in more true positive overlapping image candidates are faster identified;
+        <br><br>
+        Second, a reasonable self-adaptive weighting strategy is employed for hierarchical local bundle adjustment, which is expected to improve the SfM results;
+        <br><br>
+        Finally, but most notably, we incorporate with the capability to deal with images from multiple agents,
+        and multiple reconstructions are seamlessly merged into a complete model when commonly registered images appear.
+        <br><br>
+        The comprehensive experiments demonstrate that our on-the-fly SfMv2 is able to generate better results from what is captured,
+        in particular, a more complete reconstruction is yielded in a more time efficient way, yet state-of-the-art SfM results are obtained.
+    </div>
+
+    <!-- Download -->
+    <div class="WhitePart">
+        <div class="MainText_Title"><br><section id="Download">Download</section></div>
+        <br>
+    </div>
+
+    <div class="Div">
+        <table>
+            <tr>
+                <td colspan="5"><a href="https://www.sciencedirect.com/science/article/pii/S0924271625001388?dgcid=coauthor" color="blue">Paper</a></td>
+            </tr>
+            <tr>
+                <td colspan="5"><a href="https://github.com/sygant/onthefly/releases/" color="blue">Code(github)</a></td>
+            </tr>
+            <tr>
+                <td colspan="5"><a href="https://sygant.github.io/onthefly/" color="blue">Beta version Executables(exe) and App</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <!--Video-->
+    <div class="Div">
+        <div class="MainText_Title"><section id="Video">Video</section></div>
+    </div>
+
+    <!-- 占位符 -->
+    <div class="Empty_20"></div>
+
+    <div class="Video">
+        <video controls>
+            <source src="On_the_Fly SfMv2.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- 占位符 -->
+    <div class="Empty_50"></div>
+
+
+    <!-- Experiments -->
+    <div class="WhitePart">
+        <div class="MainText_Title"><section id="Experiments">Experiments</section></div>
+    </div>
+    <div class="Div">
+        To test our SfM on-the-fly, we primarily conduct following experiments: (1) online image retrieval with HNSW,
+        (2) adaptive hierarchical weighting for local bundle adjustment, (3) the capability for dealing with multiple agents and multiple submaps.
+        <br><br>
+        Then, numerical comparisons with two mutual SfM packages (Colmap and OpenMVG) and our previous on-the-fly SfM (v1)
+        are reported to show the accuracy of our method regarding orientation result.
+        <br><br>
+        All experiments are run on the machine with <b>i9-12900K CPU</b> and <b>RTX3080 GPU</b>.
+    </div>
+
+    <!-- Datasets -->
+    <div class="Div-Title">
+        1.Dataset<hr>
+    </div>
+
+    <div class="Div">
+        A total of 7 datasets of various scenarios are tested to evaluate our on-the-fly SfMv2. The details of the 7 datasets are as follows:
+        <br>
+    </div>
+
+    <div class="WhitePart">
+        <table border="1" class="Table">
+            <tr>
+                <td class="Experiments">Name</td>
+                <td class="Experiments">Image Num</td>
+                <td class="Experiments">Source</td>
+                <td class="Experiments">Catogry</td>
+                <td class="Experiments">Num of agents</td>
+                <td class="Experiments">Origin</td>
+            </tr>
+            <tr>
+                <td class="Experiments">XZL</td>
+                <td class="Experiments">226</td>
+                <td class="Experiments">Self-captured</td>
+                <td class="Experiments">Close-range</td>
+                <td class="Experiments">2</td>
+                <td class="Experiments" rowspan="4">Download link(Wait upload)</td>
+            </tr>
+            <tr>
+                <td class="Experiments">YD</td>
+                <td class="Experiments">291</td>
+                <td class="Experiments">Self-captured</td>
+                <td class="Experiments">UAV</td>
+                <td class="Experiments">1</td>
+            </tr>
+            <tr>
+                <td class="Experiments">YX</td>
+                <td class="Experiments">349</td>
+                <td class="Experiments">Self-captured</td>
+                <td class="Experiments">Close-range</td>
+                <td class="Experiments">1</td>
+            </tr>
+            <tr>
+                <td class="Experiments">JYYL</td>
+                <td class="Experiments">356</td>
+                <td class="Experiments">Self-captured</td>
+                <td class="Experiments">Close-range</td>
+                <td class="Experiments">3</td>
+            </tr>
+            <tr>
+                <td class="Experiments">fr1_xyz</td>
+                <td class="Experiments">798</td>
+                <td class="Experiments">Public</td>
+                <td class="Experiments">Close-range</td>
+                <td class="Experiments">\</td>
+                <td class="Experiments"><a href="https://cvg.cit.tum.de/data/datasets/rgbd-dataset">Tum</a></td>
+            </tr>
+            <tr>
+                <td class="Experiments">UniKirche</td>
+                <td class="Experiments">1455</td>
+                <td class="Experiments">Public</td>
+                <td class="Experiments">UAV & Close-range</td>
+                <td class="Experiments">\</td>
+                <td class="Experiments"><a href="Michelini, Mario; Mayer, Helmut  (2020). Structure from motion for complex image sets.pdf">UniKirche (Michelini and Mayer, 2020)</a></td>
+            </tr>
+            <tr>
+                <td class="Experiments">Alamo</td>
+                <td class="Experiments">2915</td>
+                <td class="Experiments">Public</td>
+                <td class="Experiments">Crowdsource</td>
+                <td class="Experiments">\</td>
+                <td class="Experiments"><a href="https://www.cs.cornell.edu/projects/1dsfm/">Alamo (Wilson and Snavely, 2014)</a></td>
+            </tr>
+            <tr>
+                <td class="Experiments">Caffe</td>
+                <td class="Experiments">287</td>
+                <td class="Experiments">Public</td>
+                <td class="Experiments">Close-range</td>
+                <td class="Experiments">3</td>
+                <td class="Experiments" rowspan="2"><a href="https://dl.acm.org/doi/abs/10.1145/3150165.3150166/">Poiesi et al., 2017</a></td>
+            </tr>
+            <tr>
+                <td class="Experiments">Saranta</td>
+                <td class="Experiments">1035</td>
+                <td class="Experiments">Public</td>
+                <td class="Experiments">Close-range</td>
+                <td class="Experiments">3</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Running Parameters -->
+    <div class="Div-Title">
+        <br>2.Running Parameters<hr>
+    </div>
+    <div class="Div">
+        In our experiments, there are some free parameters needed to be selected:
+        <br>
+    </div>
+
+    <div class="WhitePart">
+        <table border="1" class="Table">
+            <tr>
+                <td class="Experiments">Parameters</td>
+                <td class="Experiments">Value</td>
+                <td class="Experiments">Introduce</td>
+            </tr>
+            <tr>
+                <td class="Experiments"><em>max_elements</em></td>
+                <td class="Experiments">10000</td>
+                <td class="Experiments">corresponding HNSW graph can store up to 10,000 data points</td>
+            </tr>
+            <tr>
+                <td class="Experiments"><em>ef_construction</em></td>
+                <td class="Experiments">200</td>
+                <td class="Experiments">each element’s dynamic candidate list contains up to 200 elements during graph construction in HNSW</td>
+            </tr>
+            <tr>
+                <td class="Experiments"><em>M</em></td>
+                <td class="Experiments">16</td>
+                <td class="Experiments">each data point in the graph is connected to at most 16 other points in HNSW</td>
+            </tr>
+            <tr>
+                <td class="Experiments">Top-30</td>
+                <td class="Experiments">30</td>
+                <td class="Experiments">For online sub-reconstruction, each newly fly-in image selects the Top-30 most similar images for subsequent image matching and geometric verification.</td>
+            </tr>
+            <tr>
+                <td class="Experiments"><em>L<sub>h</sub></em></td>
+                <td class="Experiments">4</td>
+                <td class="Experiments">the maximum number of levels in the hierarchical association tree</td>
+            </tr>
+            <tr>
+                <td class="Experiments">Top-8</td>
+                <td class="Experiments">8</td>
+                <td class="Experiments">Top-8 most similar images in each level to participate in local bundle adjustment</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Fast image retrieval based on HNSW -->
+    <div class="Div-Title">
+        <br>3.Fast image retrieval based on HNSW<hr>
+    </div>
+    <div class="Div">
+        For fast image retrieval, we compare 3 methods: <b>exhaustive retrieval</b> (compares all already registered images and the newly fly-in image)
+        <b>vocabulary tree</b> and <b>HNSW</b> used in on-the-fly SfMv2. The results are as follows:
+        <br>
+    </div>
+
+    <div class="Div-Table">
+        <img src="Top-30precision.png" width="780" height="350">
+    </div>
+
+    <div class="Div">
+        Here are the results for the time efficiency of retrieval as the number of images changes, based on the <b>Alamo</b> dataset.
+        <br>
+    </div>
+
+    <div class="Div-Table">
+        <img src="RetrievalTime-ImageNum.png" width="785" height="405">
+    </div>
+
+    <!-- Adaptive weighting local bundle adjustment -->
+    <div class="Div-Title">
+        <br>4.Adaptive weighting local bundle adjustment<hr>
+    </div>
+    <div class="Div">
+        Here is a comparison of the performance of bundle adjustment between <b>the current system (v2)</b>, <b>the previous system (v1)</b>, and <b>Colmap</b>.
+        <br>
+    </div>
+
+    <div class="WhitePart">
+        <table>
+            <tr>
+                <td><img src="AMRE.png" width="385" height="230"></td>
+                <td><img src="MFRE.png" width="385" height="230"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="Table-Image"><img src="AT.png" width="385" height="230" margin="center"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Sub-reconstructions -->
+    <div class="Div-Title">
+        <br>5.Sub-reconstructions<hr>
+    </div>
+    <div class="Div">
+        Capability for multiple agents and sub-reconstructions of on-the-fly SfMv2(compared with on-the-fly SfMv1) are shown as follow:
+        <br>
+    </div>
+
+    <div class="WhitePart">
+        <table id="recon-table">
+            <tr>
+                <td>Complete reconstruction by v2</td>
+                <td colspan="6" class="Table-Image">Sub-reconstructions by v1</td>
+            </tr>
+            <tr>
+                <td><img src="XZL_New.bmp" width="260" height="205"></td>
+                <td colspan="3" class="Table-Image"><img src="XZL_Old1.bmp" width="260" height="205"></td>
+                <td colspan="3" class="Table-Image"><img src="XZL_Old2.bmp" width="260" height="205"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="Div-Table">Reconstruction of XZL</div>
+
+    <div class="WhitePart">
+        <table id="recon-table">
+            <tr>
+                <td><img src="UniKirche_New.bmp" width="260" height="205"></td>
+                <td colspan="3" class="Table-Image"><img src="UniKirche_Old1.bmp" width="260" height="205"></td>
+                <td colspan="3" class="Table-Image"><img src="UniKirche_Old2.bmp" width="260" height="205"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="Div-Table">Reconstruction of UniKirche</div>
+
+    <div class="WhitePart">
+        <table id="recon-table">
+            <tr>
+                <td><img src="YD_New.bmp" width="260" height="205"></td>
+                <td colspan="3" class="Table-Image"><img src="YD_Old1.bmp" width="260" height="205"></td>
+                <td colspan="3" class="Table-Image"><img src="YD_Old2.bmp" width="260" height="205"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="Div-Table">Reconstruction of YD</div>
+
+    <div class="WhitePart">
+        <table id="recon-table">
+            <tr>
+                <td><img src="JYYL_New.bmp" width="260" height="205"></td>
+                <td colspan="2" class="Table-Image"><img src="Middle3.bmp" width="185" height="125"></td>
+                <td colspan="2" class="Table-Image"><img src="Right3.bmp" width="172" height="135"></td>
+                <td colspan="2" class="Table-Image"><img src="Left3.bmp" width="175" height="117"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="Div-Table">Reconstruction of JYYL</div>
+
+
+    <!-- FBK Results -->
+    <div class="Div-Title">
+        <br>6.Evaluation on 3D Object Space<hr>
+    </div>
+    <div class="Div">
+        To evaluate the precision of the results in real 3D object space, here is a comparison between the results of SfM OntheFly and referenced 3D point cloud from terrestrial laser scanner:
+        <br>
+    </div>
+
+    <div class="WhitePart">
+        <table>
+            <tr>
+                <td class="Table-Image"><img src="Caffe.png" width="457" height="300"></td>
+                <td class="Table-Image"><img src="Saranta.png" width="360" height="300"></td>
+            </tr>
+            <tr>
+                <td class="Table-Image">Caffe</td>
+                <td class="Table-Image">Saranta</td>
+            </tr>
+        </table>
+    </div>
+    <div class="Div-Table">Visualization of SfM results achieved with our on-the-fly SfM using global BA</div>
+
+    <!-- 占位符 -->
+    <div class="Empty_30"></div>
+
+    <div class="WhitePart">
+        <table>
+            <tr>
+                <td class="Table-Image2">Colmap</td>
+                <td class="Table-Image2">SfM On-the-Fly with global BA</td>
+                <td class="Table-Image2">SfM On-the-Fly without global BA</td>
+            </tr>
+            <tr>
+                <td class="Table-Image"><img src="colmap_caffe.png" width="360" height="202"></td>
+                <td class="Table-Image"><img src="global_caffe.png" width="360" height="202"></td>
+                <td class="Table-Image"><img src="no_global_caffe.png" width="360" height="202"></td>
+            </tr>
+            <tr>
+                <td class="Table-Image"><img src="colmap_caffe_stat1.png" width="360" height="242"></td>
+                <td class="Table-Image"><img src="global_caffe_stat1.png" width="360" height="242"></td>
+                <td class="Table-Image"><img src="no_global_caffe_stat1.png" width="360" height="242"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="Div-Table">Evaluations on 3D object space on Caffe</div>
+
+    <!-- 占位符 -->
+    <div class="Empty_30"></div>
+
+    <div class="WhitePart">
+        <table>
+            <tr>
+                <td class="Table-Image2">Colmap</td>
+                <td class="Table-Image2">SfM On-the-Fly with global BA</td>
+                <td class="Table-Image2">SfM On-the-Fly without global BA</td>
+            </tr>
+            <tr>
+                <td class="Table-Image"><img src="colmap_saranta.png" width="360" height="202"></td>
+                <td class="Table-Image"><img src="global_saranta.png" width="360" height="202"></td>
+                <td class="Table-Image"><img src="no_global_saranta.png" width="360" height="202"></td>
+            </tr>
+            <tr>
+                <td class="Table-Image"><img src="colmap_saranta_stat1.png" width="360" height="242"></td>
+                <td class="Table-Image"><img src="global_saranta_stat1.png" width="360" height="242"></td>
+                <td class="Table-Image"><img src="no_global_saranta_stat1.png" width="360" height="242"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="Div-Table">Evaluations on 3D object space on Saranta</div>
+
+
+    <!--Application-->
+    <div class="Div">
+        <div class="MainText_Title"><section id="Application">Application</section></div>
+    </div>
+
+    <!-- 占位符 -->
+    <div class="Empty_20"></div>
+
+    <div class="Video">
+        <video controls>
+            <source src="IMAV2024_UAV_Coll3DMap.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- 占位符 -->
+    <div class="Empty_50"></div>
+
+    <!-- Acknowledgement -->
+    <div class="WhitePart">
+        <div class="MainText_Title"><br><section id="Acknowledgement">Acknowledgement</section></div>
+    </div>
+    <div class="Div">
+        This work was jointly supported by the National Natural Science Foundation of China (Grant No. 61871295, 42301507),
+        Natural Science Foundation of Hubei Province, China (No. 2022CFB727) and ISPRS Initiatives 2023.
+    </div>
+
+    <!-- Reference -->
+    <div class="WhitePart">
+        <div class="MainText_Title"><br><section id="Reference">Reference</section></div>
+    </div>
+    <div class="Div">
+        Michelini, M., Mayer, H., 2020. Structure from motion for complex image sets. ISPRS J.Photogramm. Remote Sens. 166, 140–152.
+        <br><br>
+        Wilson, K., Snavely, N., 2014. Robust global translations with 1DSFM. In: Proceedings of the European Conference on Computer Vision (ECCV). Springer, pp. 61–75.
+    </div>
+
+    <!-- About us -->
+    <div class="WhitePart">
+        <div class="MainText_Title"><br><section id="About us">About us</section></div>
+    </div>
+    <div class="WhitePart">
+        <div class="Div">
+            If you have any questions or advice, you can contact us via following address:
+            <ul>
+                <li>zqzhan@sgg.whu.edu.cn, Zongqian Zhan, WuHan University</li>
+                <li>xwang@sgg.whu.edu.cn, Xin Wang, WuHan University</li>
+                <li>xiarui@whu.edu.cn, Rui Xia, WuHan University</li>
+                <li>gwt2019@whu.edu.cn, Wentian Gan, WuHan University</li>
+                <li>yfyu2020@whu.edu.cn, YiFei Yu, WuHan University</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="WhitePart">
+        <div class="Empty_50"></div>
+    </div>
+</body>
+</html>
